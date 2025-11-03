@@ -20,7 +20,7 @@ azure-identity>=1.15.0
 # Utilities
 python-dotenv>=1.0.0
 click>=8.1.7
-numpy>=2.3.4
+numpy>=2.3.0
 scipy>=1.11.0
 
 # API Server (optional, for integration features)
