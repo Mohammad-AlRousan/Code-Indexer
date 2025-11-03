@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 import json
+import pathspec
 
 try:
     from tree_sitter import Language, Parser
@@ -92,7 +93,7 @@ class CodeDefinition:
 class TreeSitterIndexer:
     """
     Code indexer using Tree-sitter for language-aware parsing
-    Extracts signatures without implementation bodies
+    Extracts signatures without implementation bodies (Plandex approach)
     """
     
     LANGUAGE_MAP = {
@@ -217,6 +218,7 @@ class TreeSitterIndexer:
     ) -> List[CodeDefinition]:
         """
         Extract function/class signatures without implementation bodies
+        This is the core of Plandex's approach
         """
         definitions = []
         
@@ -506,6 +508,20 @@ class TreeSitterIndexer:
             children=[]
         )
     
+    def _load_gitignore(self, directory: str) -> Optional[pathspec.PathSpec]:
+        """Load and parse .gitignore file if it exists"""
+        gitignore_path = os.path.join(directory, '.gitignore')
+        if not os.path.exists(gitignore_path):
+            return None
+        
+        try:
+            with open(gitignore_path, 'r', encoding='utf-8') as f:
+                patterns = f.read().splitlines()
+            return pathspec.PathSpec.from_lines('gitwildmatch', patterns)
+        except Exception as e:
+            print(f"Warning: Could not load .gitignore: {e}")
+            return None
+    
     def index_directory(
         self,
         directory: str,
@@ -514,6 +530,7 @@ class TreeSitterIndexer:
         """
         Index all supported files in a directory
         Returns dict mapping file paths to their definitions
+        Respects .gitignore patterns automatically
         """
         if ignore_patterns is None:
             ignore_patterns = [
@@ -531,6 +548,9 @@ class TreeSitterIndexer:
         
         directory_path = Path(directory)
         
+        # Load .gitignore patterns
+        gitignore_spec = self._load_gitignore(directory)
+        
         for root, dirs, files in os.walk(directory):
             # Filter out ignored directories
             dirs[:] = [d for d in dirs if d not in ignore_patterns]
@@ -538,6 +558,11 @@ class TreeSitterIndexer:
             for file in files:
                 filepath = os.path.join(root, file)
                 rel_path = os.path.relpath(filepath, directory)
+                
+                # Check .gitignore
+                if gitignore_spec and gitignore_spec.match_file(rel_path):
+                    stats['files_skipped'] += 1
+                    continue
                 
                 # Check if supported
                 if not self.get_language_for_file(filepath):
@@ -572,7 +597,7 @@ class TreeSitterIndexer:
     
     def create_map_string(self, index_result: Dict[str, Any]) -> str:
         """
-        Create a human-readable map string
+        Create a human-readable map string (Plandex style)
         This is what you feed to the AI for context
         """
         output = []

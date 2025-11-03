@@ -7,7 +7,7 @@
 
 ## Test Environment
 
-- **Azure OpenAI Endpoint**: https://azopenai509.openai.azure.com
+- **Azure OpenAI Endpoint**: https://YourOpenAIResource.openai.azure.com
 - **API Version**: 2024-12-01-preview
 - **Embedding Model**: text-embedding-ada-002
 - **Cache Location**: .code_index_cache/

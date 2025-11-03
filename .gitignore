@@ -27,3 +27,15 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Aider integration files
+.aider*
+.aider-context.txt
+.aider-index-map.txt
+
+# VS Code Extension build
+vscode-extension/out/
+vscode-extension/node_modules/
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github\instructions\snyk_rules.instructions.md

@@ -268,7 +268,7 @@ def search(query: str, top_k: int, threshold: float, cache_dir: str,
               help='Output file (default: stdout)')
 def map(directory: str, cache_dir: str, output):
     """
-    Generate a human-readable map of the codebase
+    Generate a human-readable map of the codebase (Plandex style)
     
     Example:
         code-indexer map ./my-project

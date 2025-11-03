@@ -1,0 +1,45 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Test CLI
+      run: |
+        python src/cli.py --version
+        python src/cli.py index test_data --no-embeddings
+        python src/cli.py map test_data
+        python src/cli.py stats
+    
+    - name: Verify Python syntax
+      run: |
+        python -m py_compile src/cli.py
+        python -m py_compile src/indexer.py
+        python -m py_compile src/embeddings.py
+        python -m py_compile src/cache.py
+        python -m py_compile src/api_server.py
+        python -m py_compile aider_plugin/code_index_commands.py
+        python -m py_compile aider_plugin/api_integration.py

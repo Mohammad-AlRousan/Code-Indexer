@@ -1,0 +1,100 @@
+{
+  "name": "code-indexer-aider",
+  "displayName": "Code Indexer + Aider Integration",
+  "description": "Semantic code search with Aider context integration",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:codeIndexer.search",
+    "onCommand:codeIndexer.indexAndOpenAider",
+    "onCommand:codeIndexer.refreshIndex"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeIndexer.search",
+        "title": "Code Indexer: Search Semantically"
+      },
+      {
+        "command": "codeIndexer.indexAndOpenAider",
+        "title": "Code Indexer: Smart Aider Session"
+      },
+      {
+        "command": "codeIndexer.refreshIndex",
+        "title": "Code Indexer: Refresh Index"
+      },
+      {
+        "command": "codeIndexer.addToAiderContext",
+        "title": "Code Indexer: Add to Aider Context"
+      }
+    ],
+    "configuration": {
+      "title": "Code Indexer",
+      "properties": {
+        "codeIndexer.indexerPath": {
+          "type": "string",
+          "default": "C:/code/Code-Indexer/src/cli.py",
+          "description": "Path to Code Indexer CLI"
+        },
+        "codeIndexer.autoIndex": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically index on workspace open"
+        },
+        "codeIndexer.aiderIntegration": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Aider integration features"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "codeIndexer.search",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeIndexer.indexAndOpenAider",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codeIndexer",
+          "title": "Code Indexer",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "codeIndexer": [
+        {
+          "id": "searchResults",
+          "name": "Search Results"
+        },
+        {
+          "id": "aiderContext",
+          "name": "Aider Context Files"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^16.x",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  }
+}

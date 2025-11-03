@@ -1,9 +1,12 @@
 # Code Indexer
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.8%2B-blue)
-![Tree-sitter](https://img.shields.io/badge/tree--sitter-0.25.2-green)
-![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-embeddings-orange)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![Tests](https://github.com/Mohammad-AlRousan/Code-Indexer/workflows/Python%20Tests/badge.svg)](https://github.com/Mohammad-AlRousan/Code-Indexer/actions)
+[![Security](https://github.com/Mohammad-AlRousan/Code-Indexer/workflows/Snyk%20Security%20Scan/badge.svg)](https://github.com/Mohammad-AlRousan/Code-Indexer/security)
+[![Tree-sitter](https://img.shields.io/badge/tree--sitter-0.21%2B-green)](https://tree-sitter.github.io/)
+[![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-embeddings-orange)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![Aider Integration](https://img.shields.io/badge/Aider-integrated-purple)](docs/AIDER-INTEGRATION.md)
 
 Fast semantic code search using Tree-sitter and Azure OpenAI embeddings. Index your codebase once, search semantically forever.
 

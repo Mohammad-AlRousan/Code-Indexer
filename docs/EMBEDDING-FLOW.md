@@ -76,7 +76,7 @@ python src/cli.py index . --with-embeddings
 │   ├─ Call Azure OpenAI API:
 │   │   ┌─────────────────────────────────────────┐
 │   │   │  🌐 HTTPS POST REQUEST                  │
-│   │   │  Endpoint: azopenai509.openai.azure.com│
+│   │   │  Endpoint: YourOpenAIResource.openai.azure.com│
 │   │   │  Model: text-embedding-ada-002          │
 │   │   │  Input: ["function calculate...",       │
 │   │   │          "class ShoppingCart...", ...]  │

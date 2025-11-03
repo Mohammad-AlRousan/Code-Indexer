@@ -1,0 +1,19 @@
+name: Code-Indexer
+displayName: Code Indexer
+description: Fast semantic code search using Tree-sitter and Azure OpenAI embeddings
+repository: https://github.com/Mohammad-AlRousan/Code-Indexer
+homepage: https://github.com/Mohammad-AlRousan/Code-Indexer
+documentation: https://github.com/Mohammad-AlRousan/Code-Indexer/blob/main/README.md
+license: MIT
+author: Mohammad Al-Rousan
+topics:
+  - semantic-search
+  - code-indexing
+  - tree-sitter
+  - azure-openai
+  - aider
+  - ai-coding
+  - code-analysis
+  - embeddings
+  - python
+  - developer-tools

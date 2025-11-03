@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""
+Git pre-commit hook for Code-Indexer + Aider integration
+
+Auto-updates index when files change, ensuring Aider always has fresh context
+
+Installation:
+    cp hooks/pre-commit .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+
+def get_changed_files():
+    """Get list of staged files"""
+    result = subprocess.run(
+        ['git', 'diff', '--cached', '--name-only', '--diff-filter=ACM'],
+        capture_output=True, text=True
+    )
+    return [f for f in result.stdout.strip().split('\n') if f]
+
+
+def should_reindex(changed_files):
+    """Check if changed files warrant re-indexing"""
+    code_extensions = {
+        '.py', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs',
+        '.java', '.cpp', '.c', '.h', '.hpp', '.cs', '.rb',
+        '.php', '.swift', '.kt'
+    }
+    
+    for file in changed_files:
+        if Path(file).suffix in code_extensions:
+            return True
+    return False
+
+
+def update_index():
+    """Update Code-Indexer cache"""
+    indexer_path = Path(__file__).parent.parent / "src" / "cli.py"
+    
+    print("🔄 Updating code index...")
+    
+    try:
+        # Index only changed files (fast)
+        subprocess.run(
+            ['python', str(indexer_path), 'index', '.', '--with-embeddings'],
+            check=True,
+            capture_output=True
+        )
+        print("✅ Index updated")
+        return True
+    
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Index update failed: {e.stderr}")
+        # Don't block commit on indexing failure
+        return True
+
+
+def main():
+    changed_files = get_changed_files()
+    
+    if not changed_files:
+        sys.exit(0)
+    
+    if should_reindex(changed_files):
+        if not update_index():
+            sys.exit(1)
+    
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

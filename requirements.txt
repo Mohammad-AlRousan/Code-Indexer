@@ -22,3 +22,7 @@ python-dotenv>=1.0.0
 click>=8.1.7
 numpy>=1.26.0
 scipy>=1.11.0
+
+# API Server (optional, for integration features)
+flask>=3.0.0
+flask-cors>=4.0.0
