@@ -225,12 +225,11 @@ def search(query: str, top_k: int, threshold: float, cache_dir: str,
     for row in rows:
         file_path, name, dtype, signature, embedding_blob = row
         
-        # Unpickle embedding
+        # Deserialize embedding safely using numpy
         try:
-            embedding = pickle.loads(embedding_blob)
+            embedding = np.frombuffer(embedding_blob, dtype=np.float32)
         except:
             continue
-        
         # Compute similarity
         similarity = embeddings_service.cosine_similarity(query_embedding, embedding)
         

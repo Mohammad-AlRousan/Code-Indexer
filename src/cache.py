@@ -9,7 +9,6 @@ import sqlite3
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 from datetime import datetime
-import pickle
 
 
 class IndexCache:
@@ -56,7 +55,7 @@ class IndexCache:
                 definition_name TEXT,
                 definition_type TEXT,
                 signature_text TEXT,
-                embedding BLOB,  -- Pickled numpy array or list
+                embedding TEXT,  -- JSON-encoded list of floats
                 embedding_dim INTEGER,
                 created_at TIMESTAMP
             )
@@ -176,11 +175,11 @@ class IndexCache:
         
         results = []
         for row in rows:
-            name, dtype, signature, embedding_blob, dim = row
+            name, dtype, signature, embedding_json, dim = row
             
-            # Unpickle embedding
+            # Deserialize embedding from JSON (safe alternative to pickle)
             try:
-                embedding = pickle.loads(embedding_blob) if embedding_blob else None
+                embedding = json.loads(embedding_json) if embedding_json else None
             except:
                 embedding = None
             
@@ -214,8 +213,11 @@ class IndexCache:
             if not embedding:
                 continue
             
-            # Pickle the embedding
-            embedding_blob = pickle.dumps(embedding)
+            # Serialize embedding as JSON (safe alternative to pickle)
+            # Convert numpy array to list if needed
+            if hasattr(embedding, 'tolist'):
+                embedding = embedding.tolist()
+            embedding_json = json.dumps(embedding)
             
             cursor.execute('''
                 INSERT INTO embeddings
@@ -227,7 +229,7 @@ class IndexCache:
                 defn.get('name', ''),
                 defn.get('type', ''),
                 defn.get('signature', ''),
-                embedding_blob,
+                embedding_json,
                 len(embedding),
                 datetime.now().isoformat()
             ))
@@ -236,6 +238,10 @@ class IndexCache:
             for child in defn.get('children', []):
                 child_embedding = child.get('embedding')
                 if child_embedding:
+                    # Convert numpy array to list if needed
+                    if hasattr(child_embedding, 'tolist'):
+                        child_embedding = child_embedding.tolist()
+                    
                     cursor.execute('''
                         INSERT INTO embeddings
                         (file_path, definition_name, definition_type, signature_text,
@@ -246,7 +252,7 @@ class IndexCache:
                         child.get('name', ''),
                         child.get('type', ''),
                         child.get('signature', ''),
-                        pickle.dumps(child_embedding),
+                        json.dumps(child_embedding),
                         len(child_embedding),
                         datetime.now().isoformat()
                     ))
